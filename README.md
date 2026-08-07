@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Learn to Leader - Gamified Mobile Prototype
 
-## Getting Started
+¡Bienvenido a **Learn to Leader**! Esta es una aplicación móvil moderna (PWA) diseñada para potenciar la empleabilidad y el emprendimiento digital en jóvenes latinoamericanos, inspirada en la experiencia de gamificación de Duolingo.
 
-First, run the development server:
+## 🚀 Características del Prototipo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Interfaz Gamificada:** Diseño limpio con bordes redondeados, paleta "Naranja Quemado" y tipografía Fredoka One.
+- **Mascota Interactiva:** Una mascota animada que te acompaña, te motiva y reacciona a tus toques.
+- **Ruta de Aprendizaje:** Mapa estilo Duolingo con nodos interactivos, animaciones de pulso para el progreso actual y celebraciones con confeti.
+- **Sistema de XP y Rachas:** Gestión de estado global con Zustand para rastrear tu progreso en tiempo real.
+- **Vistas Especializadas:**
+  - **Inicio:** Selección de rutas (Empleabilidad vs Emprendimiento) y secciones de descubrimiento.
+  - **Retos:** Desafíos diarios con barras de progreso y recompensas.
+  - **Perfil:** Visualización de habilidades y medallas desbloqueadas.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Stack Tecnológico
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework:** Next.js 14 (App Router)
+- **Lenguaje:** TypeScript
+- **Estilos:** Tailwind CSS
+- **Animaciones:** Framer Motion (para fluidez y transiciones)
+- **Iconos:** Lucide React
+- **Estado:** Zustand
+- **Efectos:** Canvas-confetti
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 🏃 Cómo ejecutar el proyecto
 
-## Learn More
+Para ver la aplicación en tu navegador:
 
-To learn more about Next.js, take a look at the following resources:
+1. Asegúrate de estar en la carpeta del proyecto:
+   ```bash
+   cd learn-to-leader
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Instala las dependencias (si no se instalaron automáticamente):
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. Inicia el servidor de desarrollo:
+   ```bash
+   npm run dev
+   ```
 
-## Deploy on Vercel
+4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador. **Te recomendamos usar la vista de inspección de Chrome (F12) y activar el modo móvil para la mejor experiencia.**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📂 Estructura del Código
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- `src/app/page.tsx`: Punto de entrada principal con lógica de navegación entre pestañas.
+- `src/components/`: Componentes UI modulares (Map, Mascot, TopBar, etc.).
+- `src/store/`: Estado global de gamificación.
+- `src/app/globals.css`: Estilos base y clases de utilidad gamificadas.
