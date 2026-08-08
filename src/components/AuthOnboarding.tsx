@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore, Language } from "@/store/useGameStore";
 import { Briefcase, Rocket, ChevronRight, Sparkles, Globe } from "lucide-react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { getAssetUrl } from "@/lib/assetUrl";
 
 export default function AuthOnboarding() {
   const [step, setStep] = useState(1); // 1: Login, 2: Selection
@@ -15,7 +16,7 @@ export default function AuthOnboarding() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
-      login(name, "/newUserLogo.webp");
+      login(name, getAssetUrl("/newUserLogo.webp"));
       setStep(2);
     }
   };
@@ -62,7 +63,7 @@ export default function AuthOnboarding() {
             <div className="mb-8">
               <div className="w-28 h-28 mx-auto mb-4 animate-bobbing">
                 <img 
-                  src="/assets/images/logoLearnToLeader.webp" 
+                  src={getAssetUrl("/assets/images/logoLearnToLeader.webp")} 
                   alt="Logo Learn to Leader" 
                   className="w-full h-full object-contain drop-shadow-xl"
                 />

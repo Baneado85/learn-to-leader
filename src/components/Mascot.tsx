@@ -8,6 +8,8 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useGameStore } from "@/store/useGameStore";
 import ReactMarkdown from "react-markdown";
 
+import { getAssetUrl } from "@/lib/assetUrl";
+
 interface Message {
   id: number;
   text: string;
@@ -212,7 +214,7 @@ export default function Mascot() {
           `}
         >
           <img 
-            src="/assets/images/ChatBotLogo.webp" 
+            src={getAssetUrl("/assets/images/ChatBotLogo.webp")} 
             alt="AI Coach" 
             className="w-full h-full object-cover"
           />

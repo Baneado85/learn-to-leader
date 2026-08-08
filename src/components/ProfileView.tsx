@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useGameStore, Language } from "@/store/useGameStore";
 import { Award, ShieldCheck, Zap, Users, LogOut, Globe } from "lucide-react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { getAssetUrl } from "@/lib/assetUrl";
 
 export default function ProfileView() {
   const { xp, level, user, logout, language, setLanguage } = useGameStore();
@@ -28,7 +29,7 @@ export default function ProfileView() {
         <div className="w-32 h-32 rounded-full border-4 border-brand-primary p-1 relative">
           <div className="w-full h-full bg-brand-light rounded-full flex items-center justify-center overflow-hidden">
             {user?.avatar ? (
-              <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+              <img src={getAssetUrl(user.avatar)} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <span className="text-4xl font-fredoka text-brand-primary">
                 {user?.name[0] || "L"}

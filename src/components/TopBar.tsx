@@ -3,6 +3,7 @@
 import { useGameStore } from "@/store/useGameStore";
 import { Flame, Star, Hexagon } from "lucide-react";
 import { motion } from "framer-motion";
+import { getAssetUrl } from "@/lib/assetUrl";
 
 export default function TopBar() {
   const { streak, xp, gems, user } = useGameStore();
@@ -33,7 +34,7 @@ export default function TopBar() {
       <div className="flex-1 flex justify-center">
         <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-brand-light">
           <img 
-            src="/assets/images/logoLearnToLeader.webp" 
+            src={getAssetUrl("/assets/images/logoLearnToLeader.webp")} 
             alt="Logo" 
             className="w-full h-full object-cover"
           />
@@ -50,7 +51,7 @@ export default function TopBar() {
         {/* Avatar */}
         <div className="w-8 h-8 rounded-full bg-brand-light border-2 border-brand-primary flex items-center justify-center text-[10px] font-bold overflow-hidden">
           {user?.avatar ? (
-            <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+            <img src={getAssetUrl(user.avatar)} alt="Avatar" className="w-full h-full object-cover" />
           ) : (
             user?.name[0] || "L"
           )}
