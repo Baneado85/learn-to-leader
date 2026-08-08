@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export type Language = 'es' | 'en' | 'pt';
 
@@ -35,56 +36,63 @@ interface GameState {
   saveMissionData: (missionId: string, data: MissionContent) => void;
 }
 
-export const useGameStore = create<GameState>((set) => ({
-  xp: 120, // Start with some for demo
-  streak: 5,
-  gems: 50,
-  level: 3,
-  language: 'es',
-  geminiApiKey: null,
-  unlockedNodes: ['e1', 'b1'], // Start with the first nodes unlocked
-  completedMissions: [],
-  missionData: {},
-  user: null,
-  hasCompletedOnboarding: false,
-  selectedPath: null,
-  login: (name: string, avatar?: string) => set({ 
-    user: { 
-      name, 
-      email: `${name.toLowerCase()}@example.com`,
-      avatar: avatar || null
-    } 
-  }),
-  logout: () => set({ user: null, hasCompletedOnboarding: false, selectedPath: null }),
-  completeOnboarding: () => set({ hasCompletedOnboarding: true }),
-  setPath: (path: 'work' | 'digitalize') => set({ selectedPath: path }),
-  setLanguage: (lang: Language) => set({ language: lang }),
-  setAvatar: (avatar: string | null) => set((state) => ({
-    user: state.user ? { ...state.user, avatar } : null
-  })),
-  addXp: (amount) => set((state) => {
-    const newXp = state.xp + amount;
-    const newLevel = Math.floor(newXp / 500) + 1;
-    return { xp: newXp, level: Math.max(state.level, newLevel) };
-  }),
-  incrementStreak: () => set((state) => ({ streak: state.streak + 1 })),
-  unlockNode: (nodeId) => set((state) => ({
-    unlockedNodes: state.unlockedNodes.includes(nodeId) ? state.unlockedNodes : [...state.unlockedNodes, nodeId]
-  })),
-  completeMission: (missionId, xpReward, data) => set((state) => {
-    const isAlreadyDone = state.completedMissions.includes(missionId);
-    
-    const newXp = isAlreadyDone ? state.xp : state.xp + xpReward;
-    const newLevel = Math.floor(newXp / 500) + 1;
+export const useGameStore = create<GameState>()(
+  persist(
+    (set) => ({
+      xp: 120, // Start with some for demo
+      streak: 5,
+      gems: 50,
+      level: 3,
+      language: 'es',
+      geminiApiKey: null,
+      unlockedNodes: ['e1', 'b1'], // Start with the first nodes unlocked
+      completedMissions: [],
+      missionData: {},
+      user: null,
+      hasCompletedOnboarding: false,
+      selectedPath: null,
+      login: (name: string, avatar?: string) => set({ 
+        user: { 
+          name, 
+          email: `${name.toLowerCase()}@example.com`,
+          avatar: avatar || null
+        } 
+      }),
+      logout: () => set({ user: null, hasCompletedOnboarding: false, selectedPath: null }),
+      completeOnboarding: () => set({ hasCompletedOnboarding: true }),
+      setPath: (path: 'work' | 'digitalize') => set({ selectedPath: path }),
+      setLanguage: (lang: Language) => set({ language: lang }),
+      setAvatar: (avatar: string | null) => set((state) => ({
+        user: state.user ? { ...state.user, avatar } : null
+      })),
+      addXp: (amount) => set((state) => {
+        const newXp = state.xp + amount;
+        const newLevel = Math.floor(newXp / 500) + 1;
+        return { xp: newXp, level: Math.max(state.level, newLevel) };
+      }),
+      incrementStreak: () => set((state) => ({ streak: state.streak + 1 })),
+      unlockNode: (nodeId) => set((state) => ({
+        unlockedNodes: state.unlockedNodes.includes(nodeId) ? state.unlockedNodes : [...state.unlockedNodes, nodeId]
+      })),
+      completeMission: (missionId, xpReward, data) => set((state) => {
+        const isAlreadyDone = state.completedMissions.includes(missionId);
+        
+        const newXp = isAlreadyDone ? state.xp : state.xp + xpReward;
+        const newLevel = Math.floor(newXp / 500) + 1;
 
-    return { 
-      completedMissions: isAlreadyDone ? state.completedMissions : [...state.completedMissions, missionId],
-      missionData: { ...state.missionData, [missionId]: data },
-      xp: newXp,
-      level: Math.max(state.level, newLevel)
-    };
-  }),
-  saveMissionData: (missionId, data) => set((state) => ({
-    missionData: { ...state.missionData, [missionId]: { ...(state.missionData[missionId] || {}), ...data } }
-  })),
-}));
+        return { 
+          completedMissions: isAlreadyDone ? state.completedMissions : [...state.completedMissions, missionId],
+          missionData: { ...state.missionData, [missionId]: data },
+          xp: newXp,
+          level: Math.max(state.level, newLevel)
+        };
+      }),
+      saveMissionData: (missionId, data) => set((state) => ({
+        missionData: { ...state.missionData, [missionId]: { ...(state.missionData[missionId] || {}), ...data } }
+      })),
+    }),
+    {
+      name: 'learn-to-leader-storage',
+    }
+  )
+);
