@@ -33,6 +33,7 @@ jobs:
       - name: Build Next.js app
         env:
           NEXT_PUBLIC_BASE_PATH: '/learn-to-leader'
+          NEXT_PUBLIC_GEMINI_API_KEY: 'AIzaSyBz7T0sdkImEUNdwMdzFFjxCt2HfqRNgbY'
         run: npm run build
 
       - name: Upload artifact

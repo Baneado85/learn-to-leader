@@ -4,6 +4,7 @@ import { useGameStore } from "@/store/useGameStore";
 import { Flame, Star, Hexagon } from "lucide-react";
 import { motion } from "framer-motion";
 import { getAssetUrl } from "@/lib/assetUrl";
+import AvatarImage from "@/components/AvatarImage";
 
 export default function TopBar() {
   const { streak, xp, gems, user } = useGameStore();
@@ -49,12 +50,8 @@ export default function TopBar() {
         </div>
         
         {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-brand-light border-2 border-brand-primary flex items-center justify-center text-[10px] font-bold overflow-hidden">
-          {user?.avatar ? (
-            <img src={getAssetUrl(user.avatar)} alt="Avatar" className="w-full h-full object-cover" />
-          ) : (
-            user?.name[0] || "L"
-          )}
+        <div className="w-8 h-8 rounded-full bg-brand-light border-2 border-brand-primary flex items-center justify-center text-[10px] font-bold overflow-hidden shadow-sm">
+          <AvatarImage avatarUrl={user?.avatar} name={user?.name} iconSize={16} />
         </div>
       </div>
     </div>

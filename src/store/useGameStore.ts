@@ -27,6 +27,7 @@ interface GameState {
   completeOnboarding: () => void;
   setPath: (path: 'work' | 'digitalize') => void;
   setLanguage: (lang: Language) => void;
+  setAvatar: (avatar: string | null) => void;
   addXp: (amount: number) => void;
   incrementStreak: () => void;
   unlockNode: (nodeId: string) => void;
@@ -58,6 +59,9 @@ export const useGameStore = create<GameState>((set) => ({
   completeOnboarding: () => set({ hasCompletedOnboarding: true }),
   setPath: (path: 'work' | 'digitalize') => set({ selectedPath: path }),
   setLanguage: (lang: Language) => set({ language: lang }),
+  setAvatar: (avatar: string | null) => set((state) => ({
+    user: state.user ? { ...state.user, avatar } : null
+  })),
   addXp: (amount) => set((state) => {
     const newXp = state.xp + amount;
     const newLevel = Math.floor(newXp / 500) + 1;

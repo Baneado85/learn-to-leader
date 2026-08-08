@@ -2,12 +2,13 @@
 
 import { motion } from "framer-motion";
 import { useGameStore, Language } from "@/store/useGameStore";
-import { Award, ShieldCheck, Zap, Users, LogOut, Globe } from "lucide-react";
+import { Award, ShieldCheck, Zap, Users, LogOut, Globe, Image as ImageIcon, UserCheck } from "lucide-react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { getAssetUrl } from "@/lib/assetUrl";
+import AvatarImage from "@/components/AvatarImage";
 
 export default function ProfileView() {
-  const { xp, level, user, logout, language, setLanguage } = useGameStore();
+  const { xp, level, user, logout, language, setLanguage, setAvatar } = useGameStore();
   const { t } = useTranslation();
 
   const achievements = [
@@ -26,23 +27,43 @@ export default function ProfileView() {
   return (
     <div className="px-6 pt-24 pb-32 flex flex-col gap-8">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-32 h-32 rounded-full border-4 border-brand-primary p-1 relative">
+        <div className="w-32 h-32 rounded-full border-4 border-brand-primary p-1 relative shadow-md">
           <div className="w-full h-full bg-brand-light rounded-full flex items-center justify-center overflow-hidden">
-            {user?.avatar ? (
-              <img src={getAssetUrl(user.avatar)} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-4xl font-fredoka text-brand-primary">
-                {user?.name[0] || "L"}
-              </span>
-            )}
+            <AvatarImage avatarUrl={user?.avatar} name={user?.name} iconSize={48} className="w-full h-full" />
           </div>
           <button 
             onClick={() => logout()}
+            title="Cerrar sesión"
             className="absolute bottom-0 right-0 bg-white border-2 border-brand-light p-2 rounded-full shadow-md text-red-500 hover:bg-red-50"
           >
             <LogOut size={16} />
           </button>
         </div>
+
+        {/* Avatar option buttons */}
+        <div className="flex gap-2 text-xs">
+          <button
+            onClick={() => setAvatar(null)}
+            className={`px-3 py-1.5 rounded-full font-bold border flex items-center gap-1 transition-all ${
+              !user?.avatar
+                ? "bg-brand-primary text-white border-brand-primary"
+                : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+            }`}
+          >
+            <UserCheck size={14} /> Sin foto (Predeterminado)
+          </button>
+          <button
+            onClick={() => setAvatar("/newUserLogo.webp")}
+            className={`px-3 py-1.5 rounded-full font-bold border flex items-center gap-1 transition-all ${
+              user?.avatar
+                ? "bg-brand-primary text-white border-brand-primary"
+                : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+            }`}
+          >
+            <ImageIcon size={14} /> Con foto
+          </button>
+        </div>
+
         <div className="text-center">
           <h2 className="text-2xl font-fredoka text-brand-dark">{user?.name || t('common.defaultUser')}</h2>
           <p className="text-brand-primary font-bold">{t('common.level')} {level}</p>

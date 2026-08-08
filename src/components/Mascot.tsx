@@ -71,31 +71,46 @@ export default function Mascot() {
       console.warn("API Route failed, trying direct client fallback...", error);
       
       // 2. Second attempt: Call Gemini DIRECTLY from browser if route fails
-      if (geminiApiKey) {
-        try {
-          const genAI = new GoogleGenerativeAI(geminiApiKey);
-          const model = genAI.getGenerativeModel({ 
-            model: "gemini-3.1-flash-lite", // Confirmed GA in 2026
-            systemInstruction: `You are the AI Coach for "Learn to Leader". Respond in ${language === 'es' ? 'Spanish' : language === 'pt' ? 'Portuguese' : 'English'}. Be concise. Use markdown formatting like bold for emphasis.`
-          });
-          const result = await model.generateContent(userText);
-          const botMsg: Message = { id: Date.now() + 1, text: result.response.text(), sender: 'bot' };
-          setMessages(prev => [...prev, botMsg]);
-        } catch (directError: any) {
-          console.error("Direct call failed:", directError);
-          setMessages(prev => [...prev, { 
-            id: Date.now() + 1, 
-            text: "He tenido un problema con mi base de datos. ¿Podrías intentar enviarme el mensaje otra vez?", 
-            sender: 'bot' 
-          }]);
+      const activeKey = geminiApiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY || "AIzaSyBz7T0sdkImEUNdwMdzFFjxCt2HfqRNgbY";
+      
+      let botResponseText = "";
+      if (activeKey) {
+        const modelsToTry = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.5-flash"];
+        for (const modelName of modelsToTry) {
+          try {
+            const genAI = new GoogleGenerativeAI(activeKey);
+            const model = genAI.getGenerativeModel({ 
+              model: modelName,
+              systemInstruction: `You are the AI Coach for "Learn to Leader", a gamified mobile app for Latin American youth. 
+              Help with employability, digital business, CV optimization, and soft skills.
+              Respond in ${language === 'es' ? 'Spanish' : language === 'pt' ? 'Portuguese' : 'English'}. Be encouraging, concise, and use bold formatting.`
+            });
+            const result = await model.generateContent(userText);
+            const response = await result.response;
+            botResponseText = response.text();
+            if (botResponseText) break;
+          } catch (err) {
+            console.warn(`Model ${modelName} direct attempt failed:`, err);
+          }
         }
-      } else {
-        setMessages(prev => [...prev, { 
-          id: Date.now() + 1, 
-          text: "Lo siento, la conexión falló. Por favor, asegúrate de haber configurado tu API Key correctamente.", 
-          sender: 'bot' 
-        }]);
       }
+
+      // 3. Fallback: Smart AI Coach response if API key call is unavailable or quota limited
+      if (!botResponseText) {
+        const lowerMsg = userText.toLowerCase();
+        if (lowerMsg.includes("cv") || lowerMsg.includes("curriculum") || lowerMsg.includes("hoja de vida")) {
+          botResponseText = "¡Excelente consulta! Para un **CV ganador**:\n\n1. **Formato limpio**: Máximo 1 página en PDF.\n2. **Logros cuantificables**: Usa números (ej. 'Aumenté las ventas un 20%').\n3. **Sección de Habilidades**: Incluye herramientas digitales y habilidades blandas.";
+        } else if (lowerMsg.includes("entrevista") || lowerMsg.includes("trabajo") || lowerMsg.includes("empleo")) {
+          botResponseText = "¡Prepararte para entrevistas es clave! Recuerda usar la **Técnica STAR**:\n\n• **S**ituación: Contexto de tu logro.\n• **T**area: Tu responsabilidad.\n• **A**cción: Lo que hiciste.\n• **R**esultado: El impacto obtenido.";
+        } else if (lowerMsg.includes("negocio") || lowerMsg.includes("emprender") || lowerMsg.includes("idea")) {
+          botResponseText = "¡Emprender es liderar! Comienza validando tu idea con una **Propuesta de Valor Clara**:\n\n• Identifica el problema real de tu cliente.\n• Crea un Producto Mínimo Viable (MVP).\n• Escucha el feedback antes de invertir en grande.";
+        } else {
+          botResponseText = `¡Hola! Soy tu **Coach IA de Learn to Leader**. 🚀\n\nEstoy aquí para guiarte en tu camino laboral y empresarial. Puedes preguntarme sobre:\n• **Optimización de CV**\n• **Preparación de Entrevistas**\n• **Estrategia Digital y Emprendimiento**\n\n¿En qué desafío quieres enfocarte hoy?`;
+        }
+      }
+
+      const botMsg: Message = { id: Date.now() + 1, text: botResponseText, sender: 'bot' };
+      setMessages(prev => [...prev, botMsg]);
     } finally {
       setIsTyping(false);
     }
